@@ -1,7 +1,8 @@
 {
 	"dependencies": {
 		"esbuild": "^0.25.9",
-		"highlight.js": "^11.11.1"
+		"highlight.js": "^11.11.1",
+		"sass": "^1.90.0"
 	},
 	"scripts": {
 		"build": "node build.js"
