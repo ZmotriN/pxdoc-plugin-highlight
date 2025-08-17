@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const sass = require('sass');
 const esbuild = require('esbuild');
-const hljs = require('highlight.js');
+const hljs = require('highlight.js/package.json');
 
 // --> Set path constants
 const worktDir = __dirname;
@@ -22,7 +22,7 @@ const cssContent = sass.compile(path.join(srcDir, 'styles/styles.scss'), { style
 const pluginContent = fs.readFileSync(path.join(srcDir, 'jscripts/highlight-pxdoc.js'), 'utf8');
 
 // --> Load Banner Content
-const bannerContent = fs.readFileSync(path.join(srcDir, 'banner.txt'), 'utf8').replace(/###VERSION###/i, hljs.versionString);
+const bannerContent = fs.readFileSync(path.join(srcDir, 'banner.txt'), 'utf8').replace(/###VERSION###/i, hljs.version);
 
 // --> Compile Costum Highlight.js
 const highlightContent = esbuild.buildSync({
