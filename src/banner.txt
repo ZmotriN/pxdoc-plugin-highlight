@@ -2,4 +2,6 @@
  * @name    highlight
  * @tags    highlight
  * @version ###VERSION###
+ * @build   ###DATETIME###
+ * @author  Maxime Larrivée-Roy <zmotrin@gmail.com>
  */
