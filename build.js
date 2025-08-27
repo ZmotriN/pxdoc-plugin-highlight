@@ -1,3 +1,7 @@
+// --> Choose Supported Languages. See: https://highlightjs.readthedocs.io/en/latest/supported-languages.html
+const LANGS = ['accesslog', 'apache', 'arduino', 'asciidoc', 'bash', 'c', 'cmake', 'cpp', 'csharp', 'css', 'dart', 'diff', 'dockerfile', 'dos', 'graphql', 'http', 'ini', 'java', 'javascript', 'json', 'lua', 'makefile', 'markdown', 'nginx', 'perl', 'php', 'plaintext', 'powershell', 'processing', 'protobuf', 'python', 'scss', 'shell', 'sql', 'typescript', 'vbscript', 'wasm', 'xml', 'xquery', 'yaml'];
+
+
 // --> Include Libraries
 const fs = require('fs');
 const path = require('path');
@@ -10,7 +14,6 @@ const hljs = require('highlight.js/package.json');
 const worktDir = __dirname;
 const srcDir = path.join(worktDir, 'src/');
 const distDir = path.join(worktDir, 'dist/');
-const customFile = path.join(srcDir, 'jscripts/highlight-custom.js');
 const outputFile = path.join(distDir, 'highlight.plugin.min.js');
 
 
@@ -38,13 +41,25 @@ const bannerContent = fs.readFileSync(path.join(srcDir, 'banner.txt'), 'utf8')
 .replace(/###DATETIME###/i, now);
 
 
+// --> Create Import Script
+let importScript = `import hljs from 'highlight.js/lib/core';`;
+LANGS.forEach(lang => importScript += `import ${lang} from 'highlight.js/lib/languages/${lang}';`);
+LANGS.forEach(lang => importScript += `hljs.registerLanguage('${lang}', ${lang});`);
+importScript += `if(typeof window !== 'undefined') window.hljs = hljs;`;
+
+
 // --> Compile Costum Highlight.js
 const highlightContent = esbuild.buildSync({
-    entryPoints: [customFile],
+    stdin: {
+        contents: importScript,
+        loader: 'js',
+        sourcefile: 'hljs-custom.js',
+        resolveDir: process.cwd(),
+    },
     bundle: true,
     minify: true,
-    format: 'esm',
-    globalName: 'hljs',
+    format: 'iife',
+    globalName: 'esm',
     sourcemap: false,
     legalComments: 'none',
     treeShaking: true,
@@ -60,7 +75,7 @@ const bundleContent = templateContent
     .replace(/###PLUGINCONTENT###/i, pluginContent);
 
 
-    // --> Build final plugin
+// --> Build final plugin
 esbuild.build({
     stdin: { contents: bundleContent },
     banner: { js: bannerContent },
