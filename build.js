@@ -35,12 +35,6 @@ const cssContent = sass.compile(path.join(srcDir, 'styles/styles.scss'), { style
 const pluginContent = fs.readFileSync(path.join(srcDir, 'jscripts/highlight-pxdoc.js'), 'utf8');
 
 
-// --> Load Banner Content
-const bannerContent = fs.readFileSync(path.join(srcDir, 'banner.txt'), 'utf8')
-.replace(/###VERSION###/i, hljs.version)
-.replace(/###DATETIME###/i, now);
-
-
 // --> Create Import Script
 let importScript = `import hljs from 'highlight.js/lib/core';`;
 LANGS.forEach(lang => importScript += `import ${lang} from 'highlight.js/lib/languages/${lang}';`);
@@ -73,6 +67,12 @@ const bundleContent = templateContent
     .replace(/###CSSCONTENT###/i, cssContent)
     .replace(/###HIGHLIGHTCONTENT###/i, highlightContent)
     .replace(/###PLUGINCONTENT###/i, pluginContent);
+
+
+// --> Load Banner Content
+const bannerContent = fs.readFileSync(path.join(srcDir, 'banner.txt'), 'utf8')
+    .replace(/###VERSION###/i, hljs.version)
+    .replace(/###DATETIME###/i, now);
 
 
 // --> Build final plugin
